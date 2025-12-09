@@ -40,6 +40,11 @@
         </div>
 
         <div class="mb-3">
+            <label for="preco_de_producao" class="form-label">Preço de Produção (€)</label>
+            <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao" class="form-control" value="{{ old('preco_de_producao', $product->preco_de_producao) }}">
+        </div>
+
+        <div class="mb-3">
             <label for="min_quantity" class="form-label">Quantidade Mínima</label>
             <input type="number" name="min_quantity" id="min_quantity" class="form-control" value="{{ old('min_quantity', $product->min_quantity) }}">
         </div>

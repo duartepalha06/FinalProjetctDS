@@ -3,7 +3,14 @@
 @section('title', 'Lista de Produtos')
 
 @section('content')
-    <h1 class="mb-4">Lista de Produtos</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Lista de Produtos</h1>
+        @auth
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('products.create') }}" class="btn btn-success">Adicionar Produtos</a>
+            @endif
+        @endauth
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

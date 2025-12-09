@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\StockHistoryController;
+use App\Http\Controllers\StatisticsController;
 
 // Rota raiz
 Route::get('/', function () {
@@ -31,6 +32,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
+    Route::get('/estatisticas', [StatisticsController::class, 'index'])->name('estatisticas.index');
     Route::patch('/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
     Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::post('/alerts/{alert}/read', [AlertController::class, 'markAsRead'])->name('alerts.markAsRead');

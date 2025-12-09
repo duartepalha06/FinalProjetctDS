@@ -28,6 +28,10 @@
                             <p class="fs-5 text-success">{{ number_format($product->price, 2, ',', '.') }} €</p>
                         </div>
                         <div class="col-md-6">
+                            <p class="mb-1"><strong>Preço de Produção:</strong></p>
+                            <p class="fs-5 text-secondary">{{ number_format($product->preco_de_producao ?? 0, 2, ',', '.') }} €</p>
+                        </div>
+                        <div class="col-md-6">
                             <p class="mb-1"><strong>Quantidade:</strong></p>
                             <p class="fs-5">{{ $product->quantity }} un.</p>
                         </div>

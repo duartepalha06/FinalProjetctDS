@@ -48,6 +48,7 @@ class ProductController extends Controller
         'name' => 'required',
         'quantity' => 'required|integer',
         'price' => 'required|numeric',
+        'preco_de_producao' => 'nullable|numeric',
         'category_id' => 'required|exists:categories,id',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
@@ -96,6 +97,7 @@ class ProductController extends Controller
             'name' => 'required',
             'quantity' => 'required|integer',
             'price' => 'required|numeric',
+            'preco_de_producao' => 'nullable|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

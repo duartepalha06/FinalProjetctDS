@@ -21,11 +21,11 @@
                                 <a class="nav-link @if (request()->routeIs('products.index')) active @endif" href="{{ route('products.index') }}">Produtos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @if (request()->routeIs('products.create')) active @endif" href="{{ route('products.create') }}">Adicionar Produtos</a>
-                            </li>
-                            <li class="nav-item">
                                <a class="nav-link @if (request()->routeIs('categories.*')) active @endif" href="{{ route('categories.index') }}">Categorias</a>
                             </li>
+                                     <li class="nav-item">
+                                         <a class="nav-link @if (request()->routeIs('estatisticas.*') || request()->routeIs('estatisticas.index')) active @endif" href="{{ route('estatisticas.index') }}">Estatísticas</a>
+                                     </li>
                             <li class="nav-item">
                                <a class="nav-link @if (request()->routeIs('stock-history.*')) active @endif" href="{{ route('stock-history.index') }}">Histórico Stock</a>
                             </li>
