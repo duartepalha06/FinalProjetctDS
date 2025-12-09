@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Categorias')
+@section('title', 'Funcionários')
 
 @section('content')
     <style>
@@ -128,59 +128,49 @@
         }
     </style>
 
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <h1 class="mb-0">Categorias</h1>
-        <div class="d-flex flex-column align-items-end">
-            @if (session('success'))
-                <div class="success-alert mb-2">
-                    {{ session('success') }}
-                </div>
-            @endif
-            <a href="{{ route('categories.create') }}" class="btn btn-success btn-create">Criar Categoria</a>
-        </div>
-    </div>
+    <h1 class="mb-4">Funcionários</h1>
 
-    @if ($categories->isEmpty())
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $erro)
+                    <li>{{ $erro }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="success-alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($users->isEmpty())
         <div class="empty-message">
-            <p>Não há categorias disponíveis.</p>
+            <p>Não há funcionários disponíveis.</p>
         </div>
     @else
         <table>
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Status</th>
+                    <th>Email</th>
                     <th style="width: 30%;">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($categories as $category)
+                @foreach ($users as $user)
                     <tr>
-                        <td>{{ $category->name }}</td>
-                        <td>
-                            @if ($category->active)
-                                <span class="badge badge-success">Ativa</span>
-                            @else
-                                <span class="badge badge-danger">Inativa</span>
-                            @endif
-                        </td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
                         <td>
                             <div class="actions">
-                                <a href="{{ route('categories.show', $category) }}" class="btn btn-info">Ver</a>
-                                <a href="{{ route('categories.edit', $category) }}" class="btn btn-primary">Editar</a>
-                                <form action="{{ route('categories.toggle', $category) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    @if ($category->active)
-                                        <button type="submit" class="btn btn-warning">Desativar</button>
-                                    @else
-                                        <button type="submit" class="btn btn-success">Ativar</button>
-                                    @endif
-                                </form>
-                                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+                                <a href="{{ route('funcionarios.show', $user) }}" class="btn btn-info">Ver Lucros</a>
+                                <form action="{{ route('funcionarios.destroy', $user) }}" method="POST" onsubmit="return confirm('Tens a certeza que queres apagar este funcionário?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger">Apagar</button>
                                 </form>
                             </div>
                         </td>
@@ -190,4 +180,3 @@
         </table>
     @endif
 @endsection
-

@@ -24,6 +24,9 @@
                                <a class="nav-link @if (request()->routeIs('categories.*')) active @endif" href="{{ route('categories.index') }}">Categorias</a>
                             </li>
                                      <li class="nav-item">
+                                         <a class="nav-link @if (request()->routeIs('funcionarios.*') || request()->routeIs('funcionarios.index')) active @endif" href="{{ route('funcionarios.index') }}">Funcionários</a>
+                                     </li>
+                                     <li class="nav-item">
                                          <a class="nav-link @if (request()->routeIs('estatisticas.*') || request()->routeIs('estatisticas.index')) active @endif" href="{{ route('estatisticas.index') }}">Estatísticas</a>
                                      </li>
                             <li class="nav-item">
