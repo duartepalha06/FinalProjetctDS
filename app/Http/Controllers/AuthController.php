@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\PasswordResetMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -60,5 +65,66 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect()->route('auth.login')->with('success', 'Logout realizado!');
+    }
+
+    // Show forgot password form
+    public function showForgot()
+    {
+        return view('auth.passwords.email');
+    }
+
+    // Send reset link
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email não encontrado.']);
+        }
+
+        $token = Str::random(64);
+
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $request->email],
+            ['token' => $token, 'created_at' => Carbon::now()]
+        );
+
+        Mail::to($request->email)->send(new PasswordResetMail($token));
+
+        return back()->with('success', 'Enviámos um email com o link para redefinir a password (verifique o Mailtrap).');
+    }
+
+    // Show reset form
+    public function showReset($token)
+    {
+        return view('auth.passwords.reset', ['token' => $token]);
+    }
+
+    // Reset password
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $record = DB::table('password_resets')->where('email', $request->email)->where('token', $request->token)->first();
+        if (!$record) {
+            return back()->withErrors(['email' => 'Token inválido ou expirado.'])->onlyInput('email');
+        }
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email não encontrado.'])->onlyInput('email');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return redirect()->route('auth.login')->with('success', 'Password redefinida com sucesso! Faça login.');
     }
 }

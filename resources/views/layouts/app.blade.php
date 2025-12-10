@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Gestor de Stock')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            background-color: #eef1f3; /* slightly darker light grey */
+            padding: 2.25rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.07);
+            max-width: 680px; /* a bit wider */
+            width: 90%;
+            margin: auto;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #343a40;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .form-label { font-weight: 600; }
+
+        .form-control { border-radius: 8px; padding: 0.6rem 0.75rem; }
+
+        .btn-submit { background-color: #0d6efd; border: none; border-radius: 8px; padding: 0.6rem 1.2rem; font-weight: 700; }
+        .btn-submit:hover { background-color: #0b5ed7; }
+
+        a.text-primary { color: #0d6efd !important; }
+    </style>
 </head>
 <body>
     <!-- Navbar -->

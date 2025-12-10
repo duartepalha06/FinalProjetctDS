@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
@@ -12,8 +13,8 @@ use App\Http\Controllers\FuncionarioController;
 
 // Rota raiz
 Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->role === 'admin') {
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
             return redirect()->route('products.index');
         } else {
             return redirect()->route('shop.index');
@@ -28,6 +29,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login.post')
 Route::get('/register', [AuthController::class, 'showRegister'])->name('auth.register');
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('/password/forgot', [AuthController::class, 'showForgot'])->name('password.request');
+Route::post('/password/email', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/password/reset/{token}', [AuthController::class, 'showReset'])->name('password.reset');
+Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
 
 // Rotas do Admin (protegidas por middleware)
 Route::middleware(['auth', 'admin'])->group(function () {

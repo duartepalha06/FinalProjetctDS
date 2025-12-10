@@ -6,11 +6,9 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Criar Conta</h3>
-                    </div>
-                    <div class="card-body">
+                    <div class="card border-0">
+                    <div class="card-body form-container">
+                        <h3 class="form-title">Criar Conta</h3>
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 @foreach ($errors->all() as $error)
@@ -42,11 +40,11 @@
                                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">Registar</button>
+                            <button type="submit" class="btn btn-primary btn-submit">Registar</button>
                         </form>
 
                         <hr>
-                        <p class="text-center">Já tens conta? <a href="{{ route('auth.login') }}">Fazer Login</a></p>
+                        <p class="text-center">Já tens conta? <a class="text-primary" href="{{ route('auth.login') }}">Fazer Login</a></p>
                     </div>
                 </div>
             </div>

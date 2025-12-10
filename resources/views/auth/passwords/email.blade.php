@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', 'Recuperar Password')
 
 @section('content')
     <div class="container mt-5">
@@ -8,7 +8,7 @@
             <div class="col-md-6">
                     <div class="card border-0">
                     <div class="card-body form-container">
-                        <h3 class="form-title">Login</h3>
+                        <h3 class="form-title">Recuperar Password</h3>
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 @foreach ($errors->all() as $error)
@@ -17,7 +17,11 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('auth.login.post') }}">
+                        @if (session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        <form method="POST" action="{{ route('password.email') }}">
                             @csrf
 
                             <div class="mb-3">
@@ -25,19 +29,11 @@
                                 <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Senha</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-submit">Entrar</button>
-                                <a href="{{ route('password.request') }}" class="btn btn-outline-primary">Esqueci a password</a>
-                            </div>
+                            <button type="submit" class="btn btn-primary btn-submit">Enviar link de recuperação</button>
                         </form>
 
                         <hr>
-                        <p class="text-center">Não tens conta? <a class="text-primary" href="{{ route('auth.register') }}">Registar</a></p>
+                        <p class="text-center"><a class="text-primary" href="{{ route('auth.login') }}">Voltar ao login</a></p>
                     </div>
                 </div>
             </div>

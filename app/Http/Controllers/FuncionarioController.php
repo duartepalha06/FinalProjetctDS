@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class FuncionarioController extends Controller
 {
@@ -60,7 +61,7 @@ class FuncionarioController extends Controller
         }
 
         // Optional: prevent deleting yourself
-        if (auth()->id() === $user->id) {
+        if (Auth::id() === $user->id) {
             return redirect()->route('funcionarios.index')->withErrors(['error' => 'Não pode apagar o seu próprio utilizador.']);
         }
 

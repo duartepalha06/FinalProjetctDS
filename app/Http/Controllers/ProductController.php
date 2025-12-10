@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -65,15 +66,15 @@ class ProductController extends Controller
     $product = Product::create($data);
 
     // Registrar no histórico
-    StockHistory::create([
-        'product_id' => $product->id,
-        'user_id' => auth()->id(),
-        'quantity_before' => 0,
-        'quantity_after' => $product->quantity,
-        'quantity_changed' => $product->quantity,
-        'action' => 'created',
-        'reason' => 'Produto criado',
-    ]);
+        StockHistory::create([
+            'product_id' => $product->id,
+            'user_id' => Auth::id(),
+            'quantity_before' => 0,
+            'quantity_after' => $product->quantity,
+            'quantity_changed' => $product->quantity,
+            'action' => 'created',
+            'reason' => 'Produto criado',
+        ]);
 
     return redirect()->route('products.index')
         ->with('success', 'Produto criado com sucesso!');
@@ -122,7 +123,7 @@ class ProductController extends Controller
         if ($quantityBefore != $product->quantity) {
             StockHistory::create([
                 'product_id' => $product->id,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'quantity_before' => $quantityBefore,
                 'quantity_after' => $product->quantity,
                 'quantity_changed' => $product->quantity - $quantityBefore,
