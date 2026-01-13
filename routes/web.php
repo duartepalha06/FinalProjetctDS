@@ -39,6 +39,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
     Route::get('/estatisticas', [StatisticsController::class, 'index'])->name('estatisticas.index');
+    Route::get('/estatisticas/exportar', [StatisticsController::class, 'exportData'])->name('estatisticas.export');
     Route::get('/funcionarios', [FuncionarioController::class, 'index'])->name('funcionarios.index');
     Route::get('/funcionarios/{user}', [FuncionarioController::class, 'show'])->name('funcionarios.show');
     Route::delete('/funcionarios/{user}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
