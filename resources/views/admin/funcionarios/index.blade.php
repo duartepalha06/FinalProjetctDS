@@ -67,7 +67,12 @@
             font-size: 0.875rem;
             transition: background-color 0.3s;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+            overflow: visible;
+            min-height: 40px;
         }
 
         .btn-info {
@@ -125,6 +130,59 @@
             border-radius: 4px;
             margin-bottom: 20px;
             border-left: 4px solid #155724;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.8rem !important;
+            }
+
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                min-height: 36px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .actions {
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 0.7rem;
+            }
+
+            th, td {
+                padding: 0.5rem !important;
+            }
+
+            .btn {
+                padding: 5px 8px;
+                font-size: 0.65rem;
+                min-height: 32px;
+            }
+
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .actions {
+                gap: 4px;
+            }
+
+            .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
     </style>
 

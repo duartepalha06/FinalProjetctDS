@@ -58,6 +58,12 @@
             transition: background-color 0.3s;
             text-decoration: none;
             display: inline-block;
+            white-space: normal;
+            overflow: visible;
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-info { background-color: #17a2b8; color: white; }
@@ -69,6 +75,69 @@
         .empty-message { text-align: center; padding: 40px; color: #6c757d; }
 
         .success-alert { background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #155724; }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.6rem !important;
+            }
+
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                min-height: 36px;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 0.7rem;
+            }
+
+            th, td {
+                padding: 0.4rem !important;
+            }
+
+            .btn {
+                padding: 5px 8px;
+                font-size: 0.65rem;
+                min-height: 32px;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 3px 6px;
+            }
+
+            .actions {
+                gap: 4px;
+            }
+
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-success {
+                width: 100%;
+            }
+        }
     </style>
 
     <div class="d-flex justify-content-between align-items-center mb-4">

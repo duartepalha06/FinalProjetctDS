@@ -79,8 +79,13 @@
             cursor: pointer;
             font-size: 0.875rem;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             transition: background-color 0.3s;
+            white-space: normal;
+            overflow: visible;
+            min-height: 40px;
         }
 
         .btn-info {
@@ -116,6 +121,57 @@
             background-color: #0d6efd;
             color: white;
             border-color: #0d6efd;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.6rem !important;
+            }
+
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                min-height: 36px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 0.7rem;
+            }
+
+            th, td {
+                padding: 0.4rem !important;
+            }
+
+            .btn {
+                padding: 5px 8px;
+                font-size: 0.65rem;
+                min-height: 32px;
+            }
+
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .pagination {
+                gap: 3px;
+            }
+
+            .pagination a,
+            .pagination span {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
         }
 
         .empty-message {
