@@ -272,11 +272,29 @@
                             <div class="actions">
                                 <a href="{{ route('products.show', $product) }}" class="btn btn-info">Ver</a>
                                 <a href="{{ route('products.edit', $product) }}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProductModal-{{ $product->id }}">Editar</a>
-                                <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Tens a certeza?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                </form>
+                                                                <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline delete-product-form" data-product-id="{{ $product->id }}">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal-{{ $product->id }}">Eliminar</button>
+                                                                </form>
+                                                                <!-- Modal Confirmação Eliminar Produto -->
+                                                                <div class="modal fade" id="deleteProductModal-{{ $product->id }}" tabindex="-1" aria-labelledby="deleteProductModalLabel-{{ $product->id }}" aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="deleteProductModalLabel-{{ $product->id }}">Confirmar Eliminação</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                Tem a certeza que pretende eliminar o produto <strong>{{ $product->name }}</strong>?
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                                <button type="button" class="btn btn-danger" onclick="document.querySelector('.delete-product-form[data-product-id=\'{{ $product->id }}\']').submit();">Eliminar</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                 <!-- Modal Editar Produto (compacto) -->
                                 <div class="modal fade modal-compact" id="editProductModal-{{ $product->id }}" tabindex="-1" aria-labelledby="editProductModalLabel-{{ $product->id }}" aria-hidden="true">
                                   <div class="modal-dialog">

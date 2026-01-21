@@ -290,11 +290,29 @@
                                                                                 <button type="submit" class="btn btn-success">Ativar</button>
                                                                         @endif
                                                                 </form>
-                                                                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+                                                                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline delete-category-form" data-category-id="{{ $category->id }}">
                                                                         @csrf
                                                                         @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal-{{ $category->id }}">Eliminar</button>
                                                                 </form>
+                                                                <!-- Modal Confirmação Eliminar Categoria -->
+                                                                <div class="modal fade" id="deleteCategoryModal-{{ $category->id }}" tabindex="-1" aria-labelledby="deleteCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="deleteCategoryModalLabel-{{ $category->id }}">Confirmar Eliminação</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                Tem a certeza que pretende eliminar a categoria <strong>{{ $category->name }}</strong>?
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                                <button type="button" class="btn btn-danger" onclick="document.querySelector('.delete-category-form[data-category-id=\'{{ $category->id }}\']').submit();">Eliminar</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <!-- Modal Editar Categoria (compacto) -->
                                                                 <div class="modal fade modal-compact" id="editCategoryModal-{{ $category->id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
                                                                     <div class="modal-dialog">

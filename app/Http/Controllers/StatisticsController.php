@@ -13,28 +13,33 @@ class StatisticsController extends Controller
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
 
-        $query = DB::table('products');
-        
+        // Estatísticas baseadas em vendas/saídas (stock_histories)
+        $historyQuery = DB::table('stock_histories')
+            ->join('products', 'products.id', '=', 'stock_histories.product_id')
+            ->where('stock_histories.quantity_changed', '<', 0);
+
         if ($startDate && $endDate) {
-            $query->whereBetween(DB::raw('DATE(created_at)'), [$startDate, $endDate]);
+            $historyQuery->whereBetween(DB::raw('DATE(stock_histories.created_at)'), [$startDate, $endDate]);
         }
 
-        $total = $query
-            ->selectRaw('COALESCE(SUM(price * quantity), 0) as revenue, COALESCE(SUM(preco_de_producao * quantity), 0) as cost')
+        $total = $historyQuery
+            ->selectRaw('COALESCE(SUM(-stock_histories.quantity_changed * products.price), 0) as revenue, COALESCE(SUM(-stock_histories.quantity_changed * products.preco_de_producao), 0) as cost')
             ->first();
 
         $profit = (float) $total->revenue - (float) $total->cost;
 
-        $categoriesQuery = DB::table('products')
+        $categoriesQuery = DB::table('stock_histories')
+            ->join('products', 'products.id', '=', 'stock_histories.product_id')
             ->join('categories', 'categories.id', '=', 'products.category_id')
+            ->where('stock_histories.quantity_changed', '<', 0)
             ->where('categories.active', true);
 
         if ($startDate && $endDate) {
-            $categoriesQuery->whereBetween(DB::raw('DATE(products.created_at)'), [$startDate, $endDate]);
+            $categoriesQuery->whereBetween(DB::raw('DATE(stock_histories.created_at)'), [$startDate, $endDate]);
         }
 
         $categories = $categoriesQuery
-            ->selectRaw('categories.name as category, COALESCE(SUM(products.price * products.quantity),0) as revenue, COALESCE(SUM(products.preco_de_producao * products.quantity),0) as cost')
+            ->selectRaw('categories.name as category, COALESCE(SUM(-stock_histories.quantity_changed * products.price),0) as revenue, COALESCE(SUM(-stock_histories.quantity_changed * products.preco_de_producao),0) as cost')
             ->groupBy('categories.name')
             ->get();
 
@@ -79,7 +84,7 @@ class StatisticsController extends Controller
 
             // Totals
             $query = DB::table('products');
-            
+
             if ($startDate && $endDate) {
                 $query->whereBetween(DB::raw('DATE(created_at)'), [$startDate, $endDate]);
             }
