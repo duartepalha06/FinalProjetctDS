@@ -140,13 +140,88 @@
         }
     </style>
 
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Lista de Produtos</h1>
         @auth
             @if(auth()->user()->role === 'admin')
-                <a href="{{ route('products.create') }}" class="btn btn-success">Adicionar Produtos</a>
+                <a href="{{ route('products.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createProductModal">Adicionar Produtos</a>
             @endif
         @endauth
+    </div>
+
+    <!-- Modal de Criação de Produto (compacto) -->
+    <style>
+      .modal-compact .modal-content { font-size: 0.92rem; }
+      .modal-compact label, .modal-compact .form-label { font-size: 0.92rem; }
+      .modal-compact input, .modal-compact textarea, .modal-compact select { font-size: 0.92rem; padding: 0.35rem 0.5rem; }
+      .modal-compact .modal-title { font-size: 1.1rem; }
+      .modal-compact .btn { font-size: 0.92rem; padding: 0.35rem 0.8rem; }
+    </style>
+    <div class="modal fade modal-compact" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createProductModalLabel">Adicionar Produto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $erro)
+                            <li>{{ $erro }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-2">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label for="description" class="form-label">Descrição</label>
+                    <textarea name="description" id="description" class="form-control"></textarea>
+                </div>
+                <div class="mb-2">
+                    <label for="quantity" class="form-label">Quantidade</label>
+                    <input type="number" name="quantity" id="quantity" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label for="price" class="form-label">Preço (€)</label>
+                    <input type="number" step="0.01" name="price" id="price" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label for="preco_de_producao" class="form-label">Preço de Produção (€)</label>
+                    <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label for="min_quantity" class="form-label">Quantidade Mínima</label>
+                    <input type="number" name="min_quantity" id="min_quantity" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label for="category_id" class="form-label">Categoria</label>
+                    <select name="category_id" id="category_id" class="form-select" required>
+                        <option value="">-- Selecione uma categoria --</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="image" class="form-label">Imagem</label>
+                    <input type="file" name="image" id="image" class="form-control">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
     @if (session('success'))
@@ -196,12 +271,70 @@
                         <td>
                             <div class="actions">
                                 <a href="{{ route('products.show', $product) }}" class="btn btn-info">Ver</a>
-                                <a href="{{ route('products.edit', $product) }}" class="btn btn-primary">Editar</a>
+                                <a href="{{ route('products.edit', $product) }}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProductModal-{{ $product->id }}">Editar</a>
                                 <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Tens a certeza?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Eliminar</button>
                                 </form>
+                                <!-- Modal Editar Produto (compacto) -->
+                                <div class="modal fade modal-compact" id="editProductModal-{{ $product->id }}" tabindex="-1" aria-labelledby="editProductModalLabel-{{ $product->id }}" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="editProductModalLabel-{{ $product->id }}">Editar Produto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mb-2">
+                                                <label for="name-{{ $product->id }}" class="form-label">Nome</label>
+                                                <input type="text" name="name" id="name-{{ $product->id }}" class="form-control" required value="{{ $product->name }}">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="description-{{ $product->id }}" class="form-label">Descrição</label>
+                                                <textarea name="description" id="description-{{ $product->id }}" class="form-control">{{ $product->description }}</textarea>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="quantity-{{ $product->id }}" class="form-label">Quantidade</label>
+                                                <input type="number" name="quantity" id="quantity-{{ $product->id }}" class="form-control" required value="{{ $product->quantity }}">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="price-{{ $product->id }}" class="form-label">Preço (€)</label>
+                                                <input type="number" step="0.01" name="price" id="price-{{ $product->id }}" class="form-control" required value="{{ $product->price }}">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="preco_de_producao-{{ $product->id }}" class="form-label">Preço de Produção (€)</label>
+                                                <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao-{{ $product->id }}" class="form-control" value="{{ $product->preco_de_producao }}">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="min_quantity-{{ $product->id }}" class="form-label">Quantidade Mínima</label>
+                                                <input type="number" name="min_quantity" id="min_quantity-{{ $product->id }}" class="form-control" value="{{ $product->min_quantity }}">
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="category_id-{{ $product->id }}" class="form-label">Categoria</label>
+                                                <select name="category_id" id="category_id-{{ $product->id }}" class="form-select" required>
+                                                    <option value="">-- Selecione uma categoria --</option>
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="image-{{ $product->id }}" class="form-label">Imagem</label>
+                                                <input type="file" name="image" id="image-{{ $product->id }}" class="form-control">
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                              <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                             </div>
                         </td>
                     </tr>

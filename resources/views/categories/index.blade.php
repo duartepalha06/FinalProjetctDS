@@ -208,8 +208,49 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <a href="{{ route('categories.create') }}" class="btn btn-success btn-create">Criar Categoria</a>
+            <a href="{{ route('categories.create') }}" class="btn btn-success btn-create" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Criar Categoria</a>
         </div>
+    </div>
+
+    <!-- Modal de Criação de Categoria (compacto) -->
+    <style>
+      .modal-compact .modal-content { font-size: 0.92rem; }
+      .modal-compact label, .modal-compact .form-label { font-size: 0.92rem; }
+      .modal-compact input { font-size: 0.92rem; padding: 0.35rem 0.5rem; }
+      .modal-compact .modal-title { font-size: 1.1rem; }
+      .modal-compact .btn { font-size: 0.92rem; padding: 0.35rem 0.8rem; }
+    </style>
+    <div class="modal fade modal-compact" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createCategoryModalLabel">Adicionar Nova Categoria</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form action="{{ route('categories.store') }}" method="POST">
+                @csrf
+                <div class="mb-2">
+                    <label for="name" class="form-label">Nome da Categoria</label>
+                    <input type="text" name="name" id="name" class="form-control" required value="{{ old('name') }}">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
     @if ($categories->isEmpty())
@@ -238,22 +279,47 @@
                         </td>
                         <td>
                             <div class="actions">
-                                <a href="{{ route('categories.show', $category) }}" class="btn btn-info">Ver</a>
-                                <a href="{{ route('categories.edit', $category) }}" class="btn btn-primary">Editar</a>
-                                <form action="{{ route('categories.toggle', $category) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    @if ($category->active)
-                                        <button type="submit" class="btn btn-warning">Desativar</button>
-                                    @else
-                                        <button type="submit" class="btn btn-success">Ativar</button>
-                                    @endif
-                                </form>
-                                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                </form>
+                                                                <a href="{{ route('categories.show', $category) }}" class="btn btn-info">Ver</a>
+                                                                <a href="{{ route('categories.edit', $category) }}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal-{{ $category->id }}">Editar</a>
+                                                                <form action="{{ route('categories.toggle', $category) }}" method="POST" class="d-inline">
+                                                                        @csrf
+                                                                        @method('PATCH')
+                                                                        @if ($category->active)
+                                                                                <button type="submit" class="btn btn-warning">Desativar</button>
+                                                                        @else
+                                                                                <button type="submit" class="btn btn-success">Ativar</button>
+                                                                        @endif
+                                                                </form>
+                                                                <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                                </form>
+                                                                <!-- Modal Editar Categoria (compacto) -->
+                                                                <div class="modal fade modal-compact" id="editCategoryModal-{{ $category->id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="editCategoryModalLabel-{{ $category->id }}">Editar Categoria</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form action="{{ route('categories.update', $category) }}" method="POST">
+                                                                                        @csrf
+                                                                                        @method('PUT')
+                                                                                        <div class="mb-2">
+                                                                                                <label for="name-{{ $category->id }}" class="form-label">Nome da Categoria</label>
+                                                                                                <input type="text" name="name" id="name-{{ $category->id }}" class="form-control" required value="{{ $category->name }}">
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                                                                        </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                             </div>
                         </td>
                     </tr>

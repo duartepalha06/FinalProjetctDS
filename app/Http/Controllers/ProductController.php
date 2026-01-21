@@ -33,7 +33,9 @@ class ProductController extends Controller
             $query->where('active', true);
         })->orderBy($sort, $direction)->get();
 
-        return view('products.index', compact('products', 'sort', 'direction'));
+        $categories = \App\Models\Category::where('active', true)->get();
+
+        return view('products.index', compact('products', 'sort', 'direction', 'categories'));
     }
 
    public function create()
@@ -83,7 +85,8 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        $categories = \App\Models\Category::where('active', true)->get();
+        return view('products.show', compact('product', 'categories'));
     }
 
     public function edit(Product $product)
