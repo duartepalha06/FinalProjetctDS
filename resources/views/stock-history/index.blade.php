@@ -181,7 +181,16 @@
         }
     </style>
 
+
     <h1>Histórico de Alterações de Stock</h1>
+
+
+    <form method="GET" action="" style="margin-bottom: 30px; max-width: 420px;">
+        <div style="display: flex; gap: 12px; align-items: center; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 8px 14px;">
+            <input type="text" name="search" class="form-control" style="border-radius: 6px; border: 1px solid #dee2e6; box-shadow: none; height: 42px; font-size: 1rem; background: #fff; min-width: 400px; width: 100%; max-width: 600px;" placeholder="Pesquisar produto ou funcionário" value="{{ request('search') }}">
+            <button type="submit" class="btn btn-info" style="border-radius: 6px; min-width: 100px; font-weight: 600; font-size: 1rem; height: 42px; margin-left: 4px; box-shadow: 0 2px 8px rgba(13,110,253,0.07);">Pesquisar</button>
+        </div>
+    </form>
 
     @if ($histories->isEmpty())
         <div class="empty-message">
@@ -239,17 +248,62 @@
         </table>
     @endif
 
-    <div style="text-align: center; margin-top: 30px;">
-        @if ($histories->onFirstPage())
-            <span style="padding: 8px 16px; margin-right: 10px; color: #ccc; border: 1px solid #dee2e6; border-radius: 4px; display: inline-block; cursor: not-allowed;">Anterior</span>
-        @else
-            <a href="{{ $histories->previousPageUrl() }}" style="padding: 8px 16px; margin-right: 10px; text-decoration: none; color: #fff; background-color: #0d6efd; border: 1px solid #0d6efd; border-radius: 4px; display: inline-block;">Anterior</a>
-        @endif
+    @if (!$histories->isEmpty())
+    <div style="text-align: center; margin-top: 40px;">
+        <div style="margin-bottom: 20px; color: #343a40; font-size: 1rem;">
+            <strong>{{ $histories->firstItem() }} - {{ $histories->lastItem() }}</strong> de <strong>{{ $histories->total() }}</strong> ações
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+            @if ($histories->onFirstPage())
+                <span style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #e0e0e0; display: inline-flex; align-items: center; justify-content: center; color: #ccc; cursor: not-allowed;">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                </span>
+            @else
+                <a href="{{ $histories->previousPageUrl() }}" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #dee2e6; display: inline-flex; align-items: center; justify-content: center; color: #6c757d; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                </a>
+            @endif
 
-        @if (!$histories->hasMorePages())
-            <span style="padding: 8px 16px; color: #ccc; border: 1px solid #dee2e6; border-radius: 4px; display: inline-block; cursor: not-allowed;">Seguinte</span>
-        @else
-            <a href="{{ $histories->nextPageUrl() }}" style="padding: 8px 16px; text-decoration: none; color: #fff; background-color: #0d6efd; border: 1px solid #0d6efd; border-radius: 4px; display: inline-block;">Seguinte</a>
-        @endif
+            <span style="font-weight: 700; font-size: 1.2rem; color: #343a40;">
+                <style>
+                    #pageInput::-webkit-outer-spin-button,
+                    #pageInput::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    #pageInput {
+                        -moz-appearance: textfield;
+                    }
+                </style>
+                <input type="number" id="pageInput" value="{{ $histories->currentPage() }}" min="1" max="{{ $histories->lastPage() }}"
+                    style="width: 50px; text-align: center; font-weight: 700; font-size: 1.2rem; color: #343a40; border: 2px solid #dee2e6; border-radius: 8px; padding: 5px; outline: none;"
+                    onchange="goToPage(this.value)"
+                    onkeypress="if(event.key === 'Enter') goToPage(this.value)">
+                <span style="font-weight: 400; color: #6c757d;">/ {{ $histories->lastPage() }}</span>
+            </span>
+
+            <script>
+                function goToPage(page) {
+                    const maxPage = {{ $histories->lastPage() }};
+                    page = parseInt(page);
+                    if (page < 1) page = 1;
+                    if (page > maxPage) page = maxPage;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', page);
+                    window.location.href = url.toString();
+                }
+            </script>
+
+            @if (!$histories->hasMorePages())
+                <span style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #e0e0e0; display: inline-flex; align-items: center; justify-content: center; color: #ccc; cursor: not-allowed;">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                </span>
+            @else
+                <a href="{{ $histories->nextPageUrl() }}" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #dee2e6; display: inline-flex; align-items: center; justify-content: center; color: #6c757d; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                </a>
+            @endif
+        </div>
     </div>
+    @endif
 @endsection

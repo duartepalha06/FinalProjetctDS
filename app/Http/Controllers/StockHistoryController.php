@@ -8,11 +8,25 @@ use Illuminate\Http\Request;
 
 class StockHistoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $histories = StockHistory::with('product', 'user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = StockHistory::with('product', 'user')->orderBy('created_at', 'desc');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('product', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            })
+            ->orWhereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            });
+        }
+
+        $histories = $query->paginate(20);
+        // Mantém o parâmetro de pesquisa na paginação
+        if ($request->filled('search')) {
+            $histories->appends(['search' => $request->input('search')]);
+        }
 
         return view('stock-history.index', compact('histories'));
     }
