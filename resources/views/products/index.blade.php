@@ -4,139 +4,92 @@
 
 @section('content')
     <style>
-        h1 {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #343a40;
-        }
-
         .btn-create {
             margin-bottom: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
             border-radius: 8px;
-            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        th {
-            background-color: #f8f9fa;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #343a40;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            white-space: normal;
-            overflow: visible;
-            min-height: 40px;
-            display: inline-flex;
+        .product-img-placeholder {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-radius: 8px;
+            display: flex;
             align-items: center;
             justify-content: center;
+            color: #adb5bd;
+            font-size: 0.7rem;
         }
 
-        .btn-info { background-color: #17a2b8; color: white; }
-        .btn-primary { background-color: #0d6efd; color: white; }
-        .btn-danger { background-color: #dc3545; color: white; }
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
 
-        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .stock-ok {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
 
-        .empty-message { text-align: center; padding: 40px; color: #6c757d; }
+        .stock-low {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            color: #856404;
+        }
 
-        .success-alert { background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #155724; }
+        .stock-critical {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        .sort-link {
+            color: white !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sort-link:hover {
+            opacity: 0.8;
+        }
 
         @media (max-width: 768px) {
-            table {
-                font-size: 0.8rem;
-            }
-
             th, td {
                 padding: 0.6rem !important;
-            }
-
-            .btn {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-                min-height: 36px;
-            }
-
-            .badge {
-                font-size: 0.75rem;
-                padding: 4px 8px;
-            }
-
-            h1 {
-                font-size: 1.3rem;
+                font-size: 0.85rem;
             }
         }
 
         @media (max-width: 480px) {
-            table {
-                font-size: 0.7rem;
-            }
-
             th, td {
                 padding: 0.4rem !important;
+                font-size: 0.75rem;
             }
+        }
 
-            .btn {
-                padding: 5px 8px;
-                font-size: 0.65rem;
-                min-height: 32px;
-            }
+        .actions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            align-items: center;
+        }
 
-            .badge {
-                font-size: 0.65rem;
-                padding: 3px 6px;
-            }
+        .actions form {
+            display: inline-block;
+            margin: 0;
+        }
 
-            .actions {
-                gap: 4px;
-            }
-
-            h1 {
-                font-size: 1.1rem;
-            }
-
-            .d-flex {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .btn-success {
-                width: 100%;
-            }
+        .actions .btn {
+            white-space: nowrap;
         }
     </style>
 
@@ -150,16 +103,9 @@
         @endauth
     </div>
 
-    <!-- Modal de Criação de Produto (compacto) -->
-    <style>
-      .modal-compact .modal-content { font-size: 0.92rem; }
-      .modal-compact label, .modal-compact .form-label { font-size: 0.92rem; }
-      .modal-compact input, .modal-compact textarea, .modal-compact select { font-size: 0.92rem; padding: 0.35rem 0.5rem; }
-      .modal-compact .modal-title { font-size: 1.1rem; }
-      .modal-compact .btn { font-size: 0.92rem; padding: 0.35rem 0.8rem; }
-    </style>
-    <div class="modal fade modal-compact" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <!-- Modal de Criação de Produto -->
+    <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="createProductModalLabel">Adicionar Produto</h5>
@@ -177,46 +123,66 @@
             @endif
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="mb-2">
-                    <label for="name" class="form-label">Nome</label>
-                    <input type="text" name="name" id="name" class="form-control" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome</label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Categoria</label>
+                            <select name="category_id" id="category_id" class="form-select" required>
+                                <option value="">-- Selecione --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-2">
+
+                <div class="mb-3">
                     <label for="description" class="form-label">Descrição</label>
-                    <textarea name="description" id="description" class="form-control"></textarea>
+                    <textarea name="description" id="description" class="form-control" rows="2"></textarea>
                 </div>
-                <div class="mb-2">
-                    <label for="quantity" class="form-label">Quantidade</label>
-                    <input type="number" name="quantity" id="quantity" class="form-control" required>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantidade</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="min_quantity" class="form-label">Qtd Mínima</label>
+                            <input type="number" name="min_quantity" id="min_quantity" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Preço (€)</label>
+                            <input type="number" step="0.01" name="price" id="price" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="preco_de_producao" class="form-label">Custo (€)</label>
+                            <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao" class="form-control">
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label for="price" class="form-label">Preço (€)</label>
-                    <input type="number" step="0.01" name="price" id="price" class="form-control" required>
-                </div>
-                <div class="mb-2">
-                    <label for="preco_de_producao" class="form-label">Preço de Produção (€)</label>
-                    <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao" class="form-control">
-                </div>
-                <div class="mb-2">
-                    <label for="min_quantity" class="form-label">Quantidade Mínima</label>
-                    <input type="number" name="min_quantity" id="min_quantity" class="form-control">
-                </div>
-                <div class="mb-2">
-                    <label for="category_id" class="form-label">Categoria</label>
-                    <select name="category_id" id="category_id" class="form-select" required>
-                        <option value="">-- Selecione uma categoria --</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2">
+
+                <div class="mb-3">
                     <label for="image" class="form-label">Imagem</label>
                     <input type="file" name="image" id="image" class="form-control">
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <button type="submit" class="btn btn-primary">Guardar</button>
+
+                <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
           </div>
@@ -225,7 +191,9 @@
     </div>
 
     @if (session('success'))
-        <div class="success-alert">{{ session('success') }}</div>
+        <div class="alert alert-success mb-3">
+            {{ session('success') }}
+        </div>
     @endif
 
     @if ($products->isEmpty())
@@ -295,9 +263,9 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                <!-- Modal Editar Produto (compacto) -->
-                                <div class="modal fade modal-compact" id="editProductModal-{{ $product->id }}" tabindex="-1" aria-labelledby="editProductModalLabel-{{ $product->id }}" aria-hidden="true">
-                                  <div class="modal-dialog">
+                                <!-- Modal Editar Produto -->
+                                <div class="modal fade" id="editProductModal-{{ $product->id }}" tabindex="-1" aria-labelledby="editProductModalLabel-{{ $product->id }}" aria-hidden="true">
+                                  <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                       <div class="modal-header">
                                         <h5 class="modal-title" id="editProductModalLabel-{{ $product->id }}">Editar Produto</h5>
@@ -307,46 +275,67 @@
                                         <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
-                                            <div class="mb-2">
-                                                <label for="name-{{ $product->id }}" class="form-label">Nome</label>
-                                                <input type="text" name="name" id="name-{{ $product->id }}" class="form-control" required value="{{ $product->name }}">
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="name-{{ $product->id }}" class="form-label">Nome</label>
+                                                        <input type="text" name="name" id="name-{{ $product->id }}" class="form-control" required value="{{ $product->name }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="category_id-{{ $product->id }}" class="form-label">Categoria</label>
+                                                        <select name="category_id" id="category_id-{{ $product->id }}" class="form-select" required>
+                                                            <option value="">-- Selecione --</option>
+                                                            @foreach ($categories as $category)
+                                                                <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="mb-2">
+
+                                            <div class="mb-3">
                                                 <label for="description-{{ $product->id }}" class="form-label">Descrição</label>
-                                                <textarea name="description" id="description-{{ $product->id }}" class="form-control">{{ $product->description }}</textarea>
+                                                <textarea name="description" id="description-{{ $product->id }}" class="form-control" rows="2">{{ $product->description }}</textarea>
                                             </div>
-                                            <div class="mb-2">
-                                                <label for="quantity-{{ $product->id }}" class="form-label">Quantidade</label>
-                                                <input type="number" name="quantity" id="quantity-{{ $product->id }}" class="form-control" required value="{{ $product->quantity }}">
+
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label for="quantity-{{ $product->id }}" class="form-label">Quantidade</label>
+                                                        <input type="number" name="quantity" id="quantity-{{ $product->id }}" class="form-control" required value="{{ $product->quantity }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label for="min_quantity-{{ $product->id }}" class="form-label">Qtd Mínima</label>
+                                                        <input type="number" name="min_quantity" id="min_quantity-{{ $product->id }}" class="form-control" value="{{ $product->min_quantity }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label for="price-{{ $product->id }}" class="form-label">Preço (€)</label>
+                                                        <input type="number" step="0.01" name="price" id="price-{{ $product->id }}" class="form-control" required value="{{ $product->price }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mb-3">
+                                                        <label for="preco_de_producao-{{ $product->id }}" class="form-label">Custo (€)</label>
+                                                        <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao-{{ $product->id }}" class="form-control" value="{{ $product->preco_de_producao }}">
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="mb-2">
-                                                <label for="price-{{ $product->id }}" class="form-label">Preço (€)</label>
-                                                <input type="number" step="0.01" name="price" id="price-{{ $product->id }}" class="form-control" required value="{{ $product->price }}">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="preco_de_producao-{{ $product->id }}" class="form-label">Preço de Produção (€)</label>
-                                                <input type="number" step="0.01" name="preco_de_producao" id="preco_de_producao-{{ $product->id }}" class="form-control" value="{{ $product->preco_de_producao }}">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="min_quantity-{{ $product->id }}" class="form-label">Quantidade Mínima</label>
-                                                <input type="number" name="min_quantity" id="min_quantity-{{ $product->id }}" class="form-control" value="{{ $product->min_quantity }}">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="category_id-{{ $product->id }}" class="form-label">Categoria</label>
-                                                <select name="category_id" id="category_id-{{ $product->id }}" class="form-select" required>
-                                                    <option value="">-- Selecione uma categoria --</option>
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-2">
+
+                                            <div class="mb-3">
                                                 <label for="image-{{ $product->id }}" class="form-label">Imagem</label>
                                                 <input type="file" name="image" id="image-{{ $product->id }}" class="form-control">
                                             </div>
-                                            <div class="modal-footer">
-                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                              <button type="submit" class="btn btn-primary">Guardar</button>
+
+                                            <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
                                             </div>
                                         </form>
                                       </div>

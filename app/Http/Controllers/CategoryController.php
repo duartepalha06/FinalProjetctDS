@@ -46,12 +46,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'active' => 'boolean',
         ]);
 
         $category->update([
             'name' => $request->name,
-            'active' => $request->has('active'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Categoria atualizada com sucesso!');

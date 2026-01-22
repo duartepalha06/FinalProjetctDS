@@ -4,199 +4,56 @@
 
 @section('content')
     <style>
-        h1 {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #343a40;
-        }
-
-        .btn-create {
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #343a40;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
+        .status-badge {
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
-        .badge-success {
-            background-color: #d4edda;
+        .status-active {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
         }
 
-        .badge-danger {
-            background-color: #f8d7da;
+        .status-inactive {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
         }
 
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            white-space: normal;
-            overflow: visible;
-            min-height: 40px;
-        }
-
-        .btn-info {
-            background-color: #17a2b8;
-            color: white;
-        }
-
-        .btn-info:hover {
-            background-color: #138496;
-        }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #0b5ed7;
-        }
-
-        .btn-warning {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 40px;
-            color: #6c757d;
-        }
-
-        .success-alert {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #155724;
-        }
-
         @media (max-width: 768px) {
-            table {
-                font-size: 0.8rem;
-            }
-
             th, td {
                 padding: 0.6rem !important;
-            }
-
-            .btn {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-                min-height: 36px;
-            }
-
-            .badge {
-                font-size: 0.75rem;
-                padding: 4px 8px;
-            }
-
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .actions {
-                gap: 6px;
+                font-size: 0.85rem;
             }
         }
 
         @media (max-width: 480px) {
-            table {
-                font-size: 0.7rem;
-            }
-
             th, td {
                 padding: 0.4rem !important;
-            }
-
-            .btn {
-                padding: 5px 8px;
-                font-size: 0.65rem;
-                min-height: 32px;
-            }
-
-            .badge {
-                font-size: 0.65rem;
-                padding: 3px 6px;
-            }
-
-            .actions {
-                gap: 4px;
-            }
-
-            h1 {
-                font-size: 1.1rem;
+                font-size: 0.75rem;
             }
 
             .d-flex {
                 flex-direction: column;
                 gap: 0.5rem;
             }
+        }
 
-            .btn-create {
-                width: 100%;
-            }
+        .actions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .actions form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .actions .btn {
+            white-space: nowrap;
         }
     </style>
 
@@ -204,51 +61,44 @@
         <h1 class="mb-0">Categorias</h1>
         <div class="d-flex flex-column align-items-end">
             @if (session('success'))
-                <div class="success-alert mb-2">
+                <div class="alert alert-success mb-2">
                     {{ session('success') }}
                 </div>
             @endif
-            <a href="{{ route('categories.create') }}" class="btn btn-success btn-create" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Criar Categoria</a>
+            <a href="{{ route('categories.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Criar Categoria</a>
         </div>
     </div>
 
-    <!-- Modal de Criação de Categoria (compacto) -->
-    <style>
-      .modal-compact .modal-content { font-size: 0.92rem; }
-      .modal-compact label, .modal-compact .form-label { font-size: 0.92rem; }
-      .modal-compact input { font-size: 0.92rem; padding: 0.35rem 0.5rem; }
-      .modal-compact .modal-title { font-size: 1.1rem; }
-      .modal-compact .btn { font-size: 0.92rem; padding: 0.35rem 0.8rem; }
-    </style>
-    <div class="modal fade modal-compact" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+    <!-- Modal de Criação de Categoria -->
+    <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="createCategoryModalLabel">Adicionar Nova Categoria</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <form action="{{ route('categories.store') }}" method="POST">
-                @csrf
-                <div class="mb-2">
-                    <label for="name" class="form-label">Nome da Categoria</label>
-                    <input type="text" name="name" id="name" class="form-control" required value="{{ old('name') }}">
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-          </div>
+          <form action="{{ route('categories.store') }}" method="POST">
+            @csrf
+            <div class="modal-body">
+              @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul class="mb-0">
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
+              <div class="mb-3">
+                  <label for="name" class="form-label">Nome da Categoria</label>
+                  <input type="text" name="name" id="name" class="form-control" required value="{{ old('name') }}">
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -313,28 +163,28 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <!-- Modal Editar Categoria (compacto) -->
-                                                                <div class="modal fade modal-compact" id="editCategoryModal-{{ $category->id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
+                                                                <!-- Modal Editar Categoria -->
+                                                                <div class="modal fade" id="editCategoryModal-{{ $category->id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
                                                                     <div class="modal-dialog">
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
                                                                                 <h5 class="modal-title" id="editCategoryModalLabel-{{ $category->id }}">Editar Categoria</h5>
                                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                             </div>
-                                                                            <div class="modal-body">
-                                                                                <form action="{{ route('categories.update', $category) }}" method="POST">
-                                                                                        @csrf
-                                                                                        @method('PUT')
-                                                                                        <div class="mb-2">
-                                                                                                <label for="name-{{ $category->id }}" class="form-label">Nome da Categoria</label>
-                                                                                                <input type="text" name="name" id="name-{{ $category->id }}" class="form-control" required value="{{ $category->name }}">
-                                                                                        </div>
-                                                                                        <div class="modal-footer">
-                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                                            <button type="submit" class="btn btn-primary">Guardar</button>
-                                                                                        </div>
-                                                                                </form>
-                                                                            </div>
+                                                                            <form action="{{ route('categories.update', $category) }}" method="POST">
+                                                                                @csrf
+                                                                                @method('PUT')
+                                                                                <div class="modal-body">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="name-{{ $category->id }}" class="form-label">Nome da Categoria</label>
+                                                                                        <input type="text" name="name" id="name-{{ $category->id }}" class="form-control" required value="{{ $category->name }}">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                                                                </div>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </div>

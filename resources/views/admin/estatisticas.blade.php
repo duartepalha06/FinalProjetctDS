@@ -4,79 +4,104 @@
 
 @section('content')
     <style>
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            height: 100%;
         }
 
-        .stats-header h1 {
-            margin: 0;
+        .stats-card.revenue {
+            border-left: 5px solid #28a745;
         }
 
-        .export-btn {
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
+        .stats-card.cost {
+            border-left: 5px solid #6c757d;
         }
 
-        .export-btn:hover {
-            background-color: #0b5ed7;
+        .stats-card.profit {
+            border-left: 5px solid #0d6efd;
+        }
+
+        .stats-card h5 {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stats-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .stats-card.profit .value {
+            color: #28a745;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .chart-card h5 {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
         }
     </style>
 
-    <div class="stats-header">
-        <h1>Estatísticas</h1>
-        <button class="export-btn" data-bs-toggle="modal" data-bs-target="#exportModal">
-            📊 Exportar Dados
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Estatísticas</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+            Exportar Dados
         </button>
     </div>
 
     @if($startDate && $endDate)
         <div class="alert alert-info mb-4">
-            📅 Dados filtrados de <strong>{{ $startDate }}</strong> até <strong>{{ $endDate }}</strong>
+            Dados filtrados de <strong>{{ $startDate }}</strong> até <strong>{{ $endDate }}</strong>
         </div>
     @endif
 
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card p-3">
+        <div class="col-md-4 mb-3">
+            <div class="stats-card revenue">
                 <h5>Total Receita</h5>
-                <p class="fs-4">{{ number_format($totalRevenue, 2, ',', '.') }} €</p>
+                <p class="value mb-0">{{ number_format($totalRevenue, 2, ',', '.') }} €</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card p-3">
+        <div class="col-md-4 mb-3">
+            <div class="stats-card cost">
                 <h5>Total Custo</h5>
-                <p class="fs-4">{{ number_format($totalCost, 2, ',', '.') }} €</p>
+                <p class="value mb-0">{{ number_format($totalCost, 2, ',', '.') }} €</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card p-3">
+        <div class="col-md-4 mb-3">
+            <div class="stats-card profit">
                 <h5>Total Lucro</h5>
-                <p class="fs-4 text-success">{{ number_format($totalProfit, 2, ',', '.') }} €</p>
+                <p class="value mb-0">{{ number_format($totalProfit, 2, ',', '.') }} €</p>
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6 mb-4">
-            <div class="card p-3">
+            <div class="chart-card">
                 <h5>Resumo Total</h5>
                 <canvas id="totalChart" width="400" height="250"></canvas>
             </div>
         </div>
 
         <div class="col-md-6 mb-4">
-            <div class="card p-3">
+            <div class="chart-card">
                 <h5>Lucro por Categoria</h5>
                 <canvas id="categoryChart" width="400" height="250"></canvas>
             </div>
@@ -88,7 +113,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">📊 Exportar Dados Estatísticos</h5>
+                    <h5 class="modal-title">Exportar Dados Estatísticos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -107,7 +132,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" onclick="document.getElementById('exportForm').submit()">
-                        ⬇️ Baixar CSV
+                        Baixar CSV
                     </button>
                 </div>
             </div>
@@ -122,7 +147,8 @@
             datasets: [{
                 label: 'Valores (€)',
                 data: [{{ $totalRevenue }}, {{ $totalCost }}, {{ $totalProfit }}],
-                backgroundColor: ['#28a745', '#6c757d', '#ffc107']
+                backgroundColor: ['#28a745', '#6c757d', '#0d6efd'],
+                borderRadius: 8
             }]
         };
 
@@ -130,7 +156,8 @@
             type: 'bar',
             data: totalData,
             options: {
-                scales: { y: { beginAtZero: true } }
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
             }
         });
 
@@ -145,11 +172,13 @@
                 datasets: [{
                     label: 'Lucro (€)',
                     data: categoryProfit,
-                    backgroundColor: '#0d6efd'
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 8
                 }]
             },
             options: {
-                scales: { y: { beginAtZero: true } }
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
             }
         });
     </script>
