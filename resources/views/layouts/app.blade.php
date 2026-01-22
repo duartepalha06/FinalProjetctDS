@@ -41,6 +41,143 @@
 
         a.text-primary { color: #0d6efd !important; }
 
+        /* Sidebar sofisticada */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: linear-gradient(180deg, #343a40 0%, #495057 50%, #6c757d 100%);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sidebar-brand span {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 0 12px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-nav .nav-link {
+            display: block;
+            padding: 10px 15px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background: #0d6efd;
+            color: white;
+            box-shadow: 0 3px 10px rgba(13, 110, 253, 0.3);
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-footer .user-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-footer .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #ff6b6b;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-footer .btn-logout:hover {
+            background: rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 230px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        /* Mobile toggle */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 70px;
+            }
+        }
+
         /* Tabelas responsivas */
         .table {
             margin-bottom: 1rem;
@@ -290,74 +427,90 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Gestor de Stock</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link @if (request()->routeIs('products.index')) active @endif" href="{{ route('products.index') }}">Produtos</a>
-                            </li>
-                            <li class="nav-item">
-                               <a class="nav-link @if (request()->routeIs('categories.*')) active @endif" href="{{ route('categories.index') }}">Categorias</a>
-                            </li>
-                                     <li class="nav-item">
-                                         <a class="nav-link @if (request()->routeIs('funcionarios.*') || request()->routeIs('funcionarios.index')) active @endif" href="{{ route('funcionarios.index') }}">Funcionários</a>
-                                     </li>
-                                     <li class="nav-item">
-                                         <a class="nav-link @if (request()->routeIs('estatisticas.*') || request()->routeIs('estatisticas.index')) active @endif" href="{{ route('estatisticas.index') }}">Estatísticas</a>
-                                     </li>
-                            <li class="nav-item">
-                               <a class="nav-link @if (request()->routeIs('stock-history.*')) active @endif" href="{{ route('stock-history.index') }}">Histórico Stock</a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link @if (request()->routeIs('shop.index')) active @endif" href="{{ route('shop.index') }}">Loja</a>
-                            </li>
-                        @endif
-                    @endauth
-                </ul>
+    <!-- Botão toggle para mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+    </button>
 
-                @auth
-                    <ul class="navbar-nav ms-auto">
-                        @if (auth()->user()->role === 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link position-relative" href="{{ route('alerts.index') }}">
-                                    🔔 Alertas
-                                    @if (App\Models\Alert::where('read', false)->count() > 0)
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {{ App\Models\Alert::where('read', false)->count() }}
-                                        </span>
-                                    @endif
-                                </a>
-                            </li>
-                        @endif
-                        <li class="nav-item">
-                            <span class="nav-link text-light">Olá, {{ auth()->user()->name }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ route('auth.logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="nav-link btn btn-link" style="color: white; text-decoration: none;">Sair</button>
-                            </form>
-                        </li>
-                    </ul>
-                @endauth
-            </div>
+    <!-- Sidebar -->
+    @auth
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <span>Gestor de Stock</span>
         </div>
-    </nav>
+
+        <nav class="sidebar-nav">
+            <ul>
+                @if (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('products.index')) active @endif" href="{{ route('products.index') }}">
+                            Produtos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('categories.*')) active @endif" href="{{ route('categories.index') }}">
+                            Categorias
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('funcionarios.*')) active @endif" href="{{ route('funcionarios.index') }}">
+                            Funcionários
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('estatisticas.*')) active @endif" href="{{ route('estatisticas.index') }}">
+                            Estatísticas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('stock-history.*')) active @endif" href="{{ route('stock-history.index') }}">
+                            Histórico Stock
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative @if (request()->routeIs('alerts.*')) active @endif" href="{{ route('alerts.index') }}">
+                            Alertas
+                            @if (App\Models\Alert::where('read', false)->count() > 0)
+                                <span class="badge rounded-pill bg-danger" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
+                                    {{ App\Models\Alert::where('read', false)->count() }}
+                                </span>
+                            @endif
+                        </a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('shop.index')) active @endif" href="{{ route('shop.index') }}">
+                            Loja
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                Olá, {{ auth()->user()->name }}
+            </div>
+            <form action="{{ route('auth.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </aside>
+    @endauth
 
     <!-- Conteúdo -->
-    <div class="container">
+    <div class="@auth main-content @endauth @guest container mt-4 @endguest">
         @yield('content')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
