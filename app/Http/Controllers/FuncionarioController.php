@@ -28,14 +28,14 @@ class FuncionarioController extends Controller
 
         $profit = (float) $totals->revenue - (float) $totals->cost;
 
-        // Profit by category
+        // Profit by category - using category_name to preserve deleted categories
         $byCategory = DB::table('stock_histories')
             ->join('products', 'products.id', '=', 'stock_histories.product_id')
-            ->join('categories', 'categories.id', '=', 'products.category_id')
             ->where('stock_histories.user_id', $user->id)
             ->where('stock_histories.quantity_changed', '<', 0)
-            ->selectRaw('categories.name as category, COALESCE(SUM(-stock_histories.quantity_changed * products.price),0) as revenue, COALESCE(SUM(-stock_histories.quantity_changed * products.preco_de_producao),0) as cost')
-            ->groupBy('categories.name')
+            ->whereNotNull('products.category_name')
+            ->selectRaw('products.category_name as category, COALESCE(SUM(-stock_histories.quantity_changed * products.price),0) as revenue, COALESCE(SUM(-stock_histories.quantity_changed * products.preco_de_producao),0) as cost')
+            ->groupBy('products.category_name')
             ->get();
 
         $labels = $byCategory->pluck('category')->toArray();

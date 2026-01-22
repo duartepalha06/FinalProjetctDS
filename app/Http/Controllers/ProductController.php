@@ -58,6 +58,12 @@ class ProductController extends Controller
 
     $data = $request->all();
 
+    // Save category name
+    $category = \App\Models\Category::find($request->category_id);
+    if ($category) {
+        $data['category_name'] = $category->name;
+    }
+
     if ($request->hasFile('image')) {
         $file = $request->file('image');
         $filename = time() . '_' . $file->getClientOriginalName();
@@ -107,6 +113,14 @@ class ProductController extends Controller
 
         $quantityBefore = $product->quantity;
         $data = $request->all();
+
+        // Update category name if category changed
+        if (isset($data['category_id'])) {
+            $category = \App\Models\Category::find($data['category_id']);
+            if ($category) {
+                $data['category_name'] = $category->name;
+            }
+        }
 
         if ($request->hasFile('image')) {
             // Apagar imagem antiga se existir

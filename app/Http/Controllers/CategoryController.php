@@ -63,6 +63,10 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        // Set category_id to null for all products in this category instead of deleting them
+        \App\Models\Product::where('category_id', $category->id)
+            ->update(['category_id' => null]);
+
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Categoria eliminada com sucesso!');
     }
